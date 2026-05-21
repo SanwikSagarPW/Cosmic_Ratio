@@ -156,16 +156,15 @@
 
       // --- [FINAL UNIVERSAL DYNAMIC] SCALING LOGIC ---
       function applyLetterboxing() {
-          // Use the reliable CSS media query to check orientation.
           const isPortrait = window.matchMedia("(orientation: portrait)").matches;
           const targetAspectRatio = isPortrait ? (9 / 16) : (16 / 9);
 
           let containerWidth = unityContainer.offsetWidth;
           let containerHeight = unityContainer.offsetHeight;
           let containerAspectRatio = containerWidth / containerHeight;
-          
+
           let newWidth, newHeight;
-          
+
           if (containerAspectRatio > targetAspectRatio) {
               newHeight = containerHeight;
               newWidth = newHeight * targetAspectRatio;
@@ -174,18 +173,11 @@
               newHeight = newWidth / targetAspectRatio;
           }
 
-          // Round the final CSS size to prevent resize feedback loops.
-          const finalWidth = Math.round(newWidth);
-          const finalHeight = Math.round(newHeight);
-          
-          canvas.style.width = finalWidth + 'px';
-          canvas.style.height = finalHeight + 'px';
-
-          // Apply a DYNAMIC internal resolution for ALL devices.
-          // This ensures sharpness and correct scaling on any screen.
-          const dpr = window.devicePixelRatio || 1;
-          canvas.width = Math.round(finalWidth * dpr);
-          canvas.height = Math.round(finalHeight * dpr);
+          // Only set CSS size — never touch canvas.width/canvas.height directly.
+          // Setting those clears the WebGL context and causes a black screen.
+          // Unity manages internal resolution itself.
+          canvas.style.width = Math.round(newWidth) + 'px';
+          canvas.style.height = Math.round(newHeight) + 'px';
       }
 
       window.addEventListener('resize', applyLetterboxing);
