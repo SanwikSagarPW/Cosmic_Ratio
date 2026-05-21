@@ -227,6 +227,9 @@
         productName: "AstroidDestroyer",
         productVersion: "1.1",
         showBanner: unityShowBanner,
+        // GitHub Pages serves .wasm as application/octet-stream, not application/wasm,
+        // which blocks streaming WASM compilation. This forces ArrayBuffer fallback.
+        webAssemblyInstantiationMechanism: 1,
       };
 
       var meta = document.createElement('meta');
